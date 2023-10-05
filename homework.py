@@ -61,16 +61,14 @@ class Running(Training):
                 * self.weight / self.M_IN_KM * duration_in_min)
 
 
+@dataclass
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
     KMH_IN_MS = 0.278
     M_IN_SM = 100
     FIRST_COEFF = 0.035
     SECOND_COEFF = 0.029
-
-    def __init__(self, action, duration, weight, height):
-        super().__init__(action, duration, weight)
-        self.height = height
+    height: int
 
     def get_spent_calories(self) -> float:
         mean_speed_in_ms = (super().get_mean_speed()) * self.KMH_IN_MS
@@ -83,16 +81,14 @@ class SportsWalking(Training):
         return spent_calories
 
 
+@dataclass
 class Swimming(Training):
     """Тренировка: плавание."""
     FIRST_COEFF = 1.1
     SECOND_COEFF = 2
     LEN_STEP = 1.38
-
-    def __init__(self, action, duration, weight, length_pool, count_pool):
-        super().__init__(action, duration, weight)
-        self.length_pool = length_pool
-        self.count_pool = count_pool
+    length_pool: int
+    count_pool: int
 
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
