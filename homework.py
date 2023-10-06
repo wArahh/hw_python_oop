@@ -53,11 +53,9 @@ class Running(Training):
     CALORIES_MEAN_SPEED_SHIFT = 1.79
 
     def get_spent_calories(self) -> float:
-        mean_speed = super().get_mean_speed()
-        duration_in_min = self.duration * self.H_IN_MIN
-        return ((self.CALORIES_MEAN_SPEED_MULTIPLIER * mean_speed
+        return ((self.CALORIES_MEAN_SPEED_MULTIPLIER * super().get_mean_speed()
                 + self.CALORIES_MEAN_SPEED_SHIFT)
-                * self.weight / self.M_IN_KM * duration_in_min)
+                * self.weight / self.M_IN_KM * (self.duration * self.H_IN_MIN))
 
 
 @dataclass
@@ -70,13 +68,11 @@ class SportsWalking(Training):
     height: int
 
     def get_spent_calories(self) -> float:
-        mean_speed_in_ms = (super().get_mean_speed()) * self.KMH_IN_MS
-        height_in_m = self.height / self.M_IN_SM
-        duration_in_min = self.duration * self.H_IN_MIN
         return ((self.FIRST_COEFF * self.weight
-                + (mean_speed_in_ms**2 / height_in_m)
+                + (((super().get_mean_speed())
+                 * self.KMH_IN_MS)**2 / (self.height / self.M_IN_SM))
                 * self.SECOND_COEFF * self.weight)
-                * duration_in_min)
+                * (self.duration * self.H_IN_MIN))
 
 
 @dataclass
@@ -94,8 +90,7 @@ class Swimming(Training):
                 / self.M_IN_KM / self.duration)
 
     def get_spent_calories(self) -> float:
-        swim_avg = self.get_mean_speed()
-        return ((swim_avg + self.FIRST_COEFF)
+        return ((self.get_mean_speed() + self.FIRST_COEFF)
                 * self.SECOND_COEFF * self.weight * self.duration)
 
 
@@ -104,10 +99,9 @@ def read_package(workout_type: str, data: list) -> Training:
     workout: dict = {'SWM': Swimming,
                      'RUN': Running,
                      'WLK': SportsWalking}
-    if workout_type in workout.keys():
-        return workout[workout_type](*data)
-    else:
-        print('Данная тренировка недоступна')
+    if workout_type not in workout.keys():
+        raise ValueError('Недоступная тренировка')
+    return workout[workout_type](*data)
 
 
 def main(training: Training) -> None:
