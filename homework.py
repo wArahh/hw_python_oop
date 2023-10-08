@@ -62,7 +62,6 @@ class Running(Training):
                 * self.weight / self.M_IN_KM * (self.duration * self.H_IN_MIN))
 
 
-@dataclass
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
     KMH_IN_MS = 0.278
@@ -86,7 +85,6 @@ class SportsWalking(Training):
                 * (self.duration * self.H_IN_MIN))
 
 
-@dataclass
 class Swimming(Training):
     """Тренировка: плавание."""
     FIRST_COEFF = 1.1
